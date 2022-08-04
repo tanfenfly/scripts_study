@@ -10,7 +10,7 @@ printf("hello world\n");
 #https://perldoc.perl.org/perl#Tutorials  = include all index to perl help
 # https://perldoc.perl.org/perldsc  =
 #{{{1 basic structure
-if (1) { #just used to remove some logs
+if (0) { #just used to remove some logs
 #{{{2 scalars
 printf("_______ scalar : L%u\n",__LINE__);
 my $a1=10;
@@ -101,6 +101,59 @@ printf("\n_______ end : L%u\n",__LINE__);
 
 
 #{{{1 array operations
+my @ea1 = (13..15, 16) ;
+my $es1;
+my $es2;
+my @ea2 ;
+
+if (0) { #just used to remove some logs
+#{{{2 array as : fifo + queue
+push(@ea1,17);    push(@ea1,(18,19));    #add to end
+unshift(@ea1,12); unshift(@ea1,(10,11)); #add to head
+$es1=pop ( @ea1 ) ;  #remove last and return
+$es1=shift( @ea1 ) ; #remove first and return
+#2}}}
+#{{{2 child array
+@ea1 = (10..15);
+my @ea1_sub_array = @ea1[0,3,5];
+splice( @ea1, 0,3, (100..102) ); # spliace(@array, startIdx,Length,  NewInsertedArray);
+#2}}}
+#{{{2 string <--> Array : transfer
+$es1="x1,x2,x3";
+@ea1 = split (/,/,$es1);
+$es2 = join ('-', @ea1 );
+#2}}}
+#{{{2 sort
+@ea1 = (50..53, 3, 9);
+@ea2 = sort( @ea1 ); #sort as ASCII string
+sub sub01_compare_number { 
+  if($_[1]>$_[0]){return -1;}
+  elsif($_[1]==$_[0]){return 0;}
+  else{return 1;}
+}
+@ea2 = sort  sub01_compare_number @ea1 ; print "L", __LINE__, ": " ,Dumper(\@ea2);#no change
+
+sub sub02_compare_number { $a <=> $b }
+@ea2 = sort  sub02_compare_number @ea1 ; print "L", __LINE__, ": " ,Dumper(\@ea2);
+
+sub sub03_compare_number_high2low  { 
+  if(($a-$b)>0){return -1;} elsif(($a-$b)==0){return 0;} else{return 1;}
+}
+@ea2 = sort  sub03_compare_number_high2low @ea1 ; print "L", __LINE__, ": " ,Dumper(\@ea2);
+
+sub sub04_compare_number_high2low  { 
+  if(($a-$b)>0){return 1;} elsif(($a-$b)==0){return 0;} else{return -1;}
+}
+@ea2 = sort  sub04_compare_number_high2low @ea1 ; print "L", __LINE__, ": " ,Dumper(\@ea2);
+#2}}} 
+#{{{2 for interation array
+@ea1=(10..12);
+for my $i (@ea1) { printf("L%u : %u \n",__LINE__,$i); } 
+for (my $i=0; $i<=$#ea1; $i++ ) { printf("L%u : %u \n",__LINE__,$ea1[$i]); } 
+#2}}}
+#print Dumper($es2);
+#print Dumper(\@ea1);
+}
 #1}}}
 #{{{1 hash operations
 #1}}}
