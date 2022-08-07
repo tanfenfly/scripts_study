@@ -93,13 +93,6 @@ print Dumper(\%dh1);
 #2}}} reference
 }
 #1}}}
-
-
-
-
-printf("\n_______ end : L%u\n",__LINE__);
-
-
 #{{{1 array operations
 my @ea1 = (13..15, 16) ;
 my $es1;
@@ -156,5 +149,40 @@ for (my $i=0; $i<=$#ea1; $i++ ) { printf("L%u : %u \n",__LINE__,$ea1[$i]); }
 }
 #1}}}
 #{{{1 hash operations
+my @fa1;
+#my %fh1 = { "k1" => "v1", "k2" => "v2", "k3" => "v3", } ; #Error
+my %fh1 = ( "k1" => "v1", "k2" => "v2", "k3" => "v3", ) ; #ok
+
+#{{{2 all keys/values of hash
+my @fh1_part_values = @fh1{'k1','k3'};
+my @fh1_all_keys = keys (%fh1);
+my @fh1_all_values = values (%fh1);
+my $fh1_size = keys ( %fh1 );
+   $fh1_size = values ( %fh1 );
+#2}}}
+#{{{2 check element whether exists
+printf("L%u: %u \n",__LINE__,$fh1_size);
+if ( exists($fh1{'k1'}) ) { printf("L%u: k1 exist \n",__LINE__); }
+if ( exists($fh1{'k9'}) ) { printf("L%u: k9 exist \n",__LINE__); } else { printf("L%u: k9 not exist \n",__LINE__); }
+#2}}}
+#{{{2 add/remove element of hash
+$fh1{'k4'} = 'v4' ; 
+delete $fh1{'k1'};
+#2}}}
+#{{{2 for/while interation of hash
+foreach my $fs1 (sort keys(%fh1)) {
+  printf("L%u: (key,value)=(%s,%s) \n",__LINE__, $fs1 , $fh1{$fs1});
+}
+
+while ( my ($k,$v) = each(%fh1)) {
+  printf("L%u: k,v=$k,$v\n",__LINE__);
+}
+#2}}}
+printf("L%u:\n",__LINE__);
+print Dumper(\@fa1);
+print Dumper(\@fh1_all_values);
+print Dumper(\%fh1);
 #1}}}
 
+printf("\n_______ end : L%u\n",__LINE__);
+printf("L%u:\n",__LINE__);
