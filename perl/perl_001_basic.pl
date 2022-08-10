@@ -153,6 +153,7 @@ my @fa1;
 #my %fh1 = { "k1" => "v1", "k2" => "v2", "k3" => "v3", } ; #Error
 my %fh1 = ( "k1" => "v1", "k2" => "v2", "k3" => "v3", ) ; #ok
 
+if (0) { #just used to remove some logs
 #{{{2 all keys/values of hash
 my @fh1_part_values = @fh1{'k1','k3'};
 my @fh1_all_keys = keys (%fh1);
@@ -182,6 +183,67 @@ printf("L%u:\n",__LINE__);
 print Dumper(\@fa1);
 print Dumper(\@fh1_all_values);
 print Dumper(\%fh1);
+}
+#1}}}
+#{{{1 operators 
+my $g1;
+my $g2;
+my $g3;
+
+#{{{2 + - * /
+$g1=10;       $g2=20;        $g3 = $g1 + $g2 ;
+$g1=0x10;     $g2=0x20;      $g3 = $g1 + $g2 ;
+$g1="0x10";   $g2=0x20;      $g3 = hex($g1) + $g2 ;
+$g1=10;       $g2=20;        $g3 = $g1 - $g2 ;
+$g1=10;       $g2=20;        $g3 = $g1 * $g2 ;
+$g1="10";     $g2=20;        $g3 = $g1 * $g2 ;
+$g1="10";     $g2=20;        $g3 = $g1 x $g2 ; #used as string duplicate
+#2}}}
+#{{{2 number compare : > < == != >= <= <=>
+$g1=10;$g2=20;
+if    ( $g1 >  $g2 )  { $g3=1; }
+elsif ( $g1 == $g2)   { $g3=0; }
+else { $g3=-1; }
+$g3 = ($g1<=>$g2);
+#2}}}
+#{{{2 string compare: lt/gt + ge/le/eq/ne + cmp
+$g1="abc"; $g2="def";
+if    ( $g1 eq $g2 ) { $g3="Equal"; }
+elsif ( $g1 gt $g2 ) { $g3="gt"; }
+elsif ( $g1 lt $g2 ) { $g3="lt"; }
+$g3 = ( $g1 cmp $g2 );
+#2}}}
+#{{{2 bit operation:  | & ^ >> <<
+$g1=0x03; $g2=0x0f;
+$g1=0b0011_0011; $g2=0b1100;
+$g3= $g1 | $g2;
+$g3= $g1 & $g2;
+$g3= $g1 ^ $g2;
+$g3= ((5<<2)>>1);
+
+#2}}}
+#{{{2 logcal and/or/not  && || 
+if ((5>3) && (2<5)) { $g3="ok" ; }
+if ( 1 and 3 ) { $g3="constant"; }
+#2}}}
+#{{{2  quto : q{yy}='yy'  qq{xx}="xx"   qx{}=`xxShellCmd`
+$g1='20';
+$g3=q{$g1};
+$g3=qq{$g1};
+$g3=qx{date +%Y%m}; #excute shell cmd
+
+#2}}}
+#{{{2  string/range =~ !=
+$g1="xx1"; $g2="xx2"; $g3 = $g1 . $g2 ; #String add
+$g1="xx1"; $g2=6; $g3 = $g1 x $g2 ; #String duplicate
+$g3=(4..9);
+
+if ("abc"=~/^\w+$/) { printf("L%u: match \n",__LINE__); }
+if ("abc@"=~/^\w+$/) { printf("L%u: match \n",__LINE__); }
+if ("abc@"!~/^\w+$/) { printf("L%u: not match \n",__LINE__); }
+#2}}}
+
+printf("L%u: (g1,g2,  g3)=($g1,$g2,  $g3)\n",__LINE__);
 #1}}}
 
 printf("\n_______ end : L%u\n",__LINE__);
