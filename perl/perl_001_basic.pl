@@ -5,7 +5,7 @@ use strict;
 use Data::Dumper;
 use vars qw(%hash2 %hash1 @arry1);
 printf("hello world\n");
-#
+# perldoc perldoc
 #https://perldoc.perl.org/perlintro
 #https://perldoc.perl.org/perl#Tutorials  = include all index to perl help
 # https://perldoc.perl.org/perldsc  =
@@ -190,6 +190,7 @@ my $g1;
 my $g2;
 my $g3;
 
+if (0) { #just used to remove some logs
 #{{{2 + - * /
 $g1=10;       $g2=20;        $g3 = $g1 + $g2 ;
 $g1=0x10;     $g2=0x20;      $g3 = $g1 + $g2 ;
@@ -244,6 +245,93 @@ if ("abc@"!~/^\w+$/) { printf("L%u: not match \n",__LINE__); }
 #2}}}
 
 printf("L%u: (g1,g2,  g3)=($g1,$g2,  $g3)\n",__LINE__);
+}
+#1}}}
+#{{{1 advance data structure
+
+printf("L%u:\n",__LINE__);
+if (0) { #just used to remove some logs
+#{{{2    data{}[] = data{name}[idx]
+my %hh1_class =  ();
+my $hs1;
+my $hr1;
+#{{{3 add element 
+$hh1_class{"person_01"} = [ 15, 20,"name1"];
+$hh1_class{"person_02"} = [ 16, 21,"name2"];
+for(my $hi1=0;$hi1<2;$hi1++) {
+  my @ha1=[ $hi1+100, $hi1+200, "name_$hi1"];
+  $hh1_class{"person_$hi1"} = \@ha1; #Local var can be save in hash/array, and will not delete outside of the visual scope
+}
+#3}}}
+#{{{3 access element using reference
+$hr1=\%hh1_class;
+$hs1=$hh1_class{"person_02"}[2];
+$hs1=($hr1)->{"person_02"}[2];
+$hs1=($hr1)->{"person_02"}->[2];
+
+$hs1=${$hr1}{"person_02"}[2]; #perlreftut : UseRule1: use {$ref} in place of arrayName or hashName
+$hs1=$$hr1{"person_02"}[2]; # {$ref} here {} can be ignore
+$hs1=$hr1->{"person_02"}[2]; #perlreftut : UseRule2: simple writing syntax using ->
+$hs1=$hr1->{"person_02"}->[2]; #perlreftut :  continus {}->[] can simplify as {}[]
+#3}}}
+printf("L%u: hs1= $hs1 \n",__LINE__);
+#printf("L%u: hr1= $hr1 \n",__LINE__);
+#$hh1_class{"person_01"} = ( 15 );
+print Dumper(\%hh1_class);
+
+
+#2}}} 
+#{{{2 data{}{}
+my %hh2_regs;
+my $hr2;
+my $hs2;
+
+$hh2_regs{"name_01"} = {"addr"=>0x0000,"defval"=>0x001,"curval"=>0x001};
+$hh2_regs{"name_02"} = {"addr"=>1120,"defval"=>0x005,"curval"=>0x005};
+
+$hr2 = \%hh2_regs;
+$hr2->{"name_03"} = {"addr"=>3340,"defval"=>0x005,"curval"=>0x005};
+$hs2 = ${$hr2}{"name_02"}{"addr"};
+$hs2 = $$hr2{"name_02"}{"addr"};
+$hs2 = $hr2->{"name_02"}{"addr"};
+$hs2 = $hr2->{"name_02"}->{"addr"};
+printf("L%u:\n",__LINE__);
+printf("L%u: hs2 = $hs2 \n",__LINE__);
+print Dumper(\%hh2_regs);
+#2}}}
+#{{{2 data{}{}[]  data{}{}{}: similar to C structre
+my %hh3_trbs;
+$hh3_trbs{"ab00"} = {
+  "4B_array" => [0x001,0x002,0x004,0x005],
+  "fields" => { "daddr"=>0x001, "dlen"=>0x002,"iso"=>1,"cn"=>1,"last"=>0 },
+};
+my $hr3a_trbs;
+my $hr3b_4Bary;
+my $hr3c_fields;
+my $hs3;
+
+$hr3a_trbs=\%hh3_trbs;
+$hr3a_trbs->{"ab04"}{"4B_array"} = [0x11,0x22,0x33,0x44];
+
+$hr3b_4Bary= $hr3a_trbs->{"ab04"}{"4B_array"};
+$hr3a_trbs->{ab04}{fields}{daddr} = $hr3b_4Bary->[0];
+$hr3a_trbs->{ab04}{fields}{dlen} = $hr3b_4Bary->[1];
+$hr3a_trbs->{ab04}{fields}{iso} = ($hr3b_4Bary->[2]>>2)&0x1;
+
+$hr3c_fields=$hr3a_trbs->{"ab04"}{"fields"};
+$hr3c_fields->{cn}=($hr3b_4Bary->[3]>>2) & 0x1;
+$hr3c_fields->{last}=($hr3b_4Bary->[3]>>0) & 0x1;
+
+$hs3= $hr3a_trbs->{ab04}{fields}{daddr};
+$hs3=hex("123")>>4; #Convert string to hex
+printf("L%u: hs3=$hs3\n",__LINE__);
+
+print Dumper(\%hh3_trbs);
+#2}}}
+}
+#1}}}
+#{{{1 binary/hex <---> string
+
 #1}}}
 
 printf("\n_______ end : L%u\n",__LINE__);
