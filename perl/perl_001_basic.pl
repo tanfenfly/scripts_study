@@ -249,8 +249,8 @@ printf("L%u: (g1,g2,  g3)=($g1,$g2,  $g3)\n",__LINE__);
 #1}}}
 #{{{1 advance data structure
 
-printf("L%u:\n",__LINE__);
 if (0) { #just used to remove some logs
+printf("L%u:\n",__LINE__);
 #{{{2    data{}[] = data{name}[idx]
 my %hh1_class =  ();
 my $hs1;
@@ -332,6 +332,19 @@ print Dumper(\%hh3_trbs);
 #1}}}
 #{{{1 binary/hex <---> string
 
+printf("L%u:\n",__LINE__);
+my $gs1="abcd";
+my $gs1="f";
+my $gs2=$gs1;
+$gs2=hex($gs1);
+$gs2=sprintf("%x",hex($gs1));
+$gs2=sprintf("%016b",hex($gs1));
+
+
+
+printf("L%u: string,hex,decimal=%s,%x,%u \n",__LINE__,$gs2,hex($gs2),hex($gs2));
+#1}}}
+#{{{1 regexp
 #1}}}
 
 printf("\n_______ end : L%u\n",__LINE__);
