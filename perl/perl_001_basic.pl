@@ -332,19 +332,63 @@ print Dumper(\%hh3_trbs);
 #1}}}
 #{{{1 binary/hex <---> string
 
+if (0) { #just used to remove some logs
 printf("L%u:\n",__LINE__);
-my $gs1="abcd";
-my $gs1="f";
-my $gs2=$gs1;
-$gs2=hex($gs1);
-$gs2=sprintf("%x",hex($gs1));
-$gs2=sprintf("%016b",hex($gs1));
+my $is1="abcd";
+my $is1="f";
+my $is2=$is1;
+$is2=hex($is1);
+$is2=sprintf("%x",hex($is1));
+$is2=sprintf("%016b",hex($is1));
 
 
 
-printf("L%u: string,hex,decimal=%s,%x,%u \n",__LINE__,$gs2,hex($gs2),hex($gs2));
+printf("L%u: string,hex,decimal=%s,%x,%u \n",__LINE__,$is2,hex($is2),hex($is2));
+}
 #1}}}
 #{{{1 regexp
+
+printf("L%u:\n",__LINE__);
+my @ja1;
+my $js1="123 abc456 789def ghi066jkl mno";
+#{{{2 
+@ja1 = ($js1 =~ m/(\w+)/); #just the first match
+@ja1 = ($js1 =~ m/(\w+)/g); #get all matches
+@ja1 = ($js1 =~ m/(\w+)\s+(\w+)/); #get $1 $2
+#2}}}
+
+#{{{2 Zero Length : lookbehind/lookahead is/isnot somthing
+@ja1 = ($js1 =~ m/^(\w+)/);   # ^ = lookbehind no chars= [0] behind [1]
+@ja1 = ($js1 =~ m/(\w+)$/);   # $ = lookahead no chars= [1] ahead [0]
+@ja1 = ($js1 =~ m/(?<=\s)(\w+)/g); #lookbehind  (?<=MatchThisRegexp_zeroLenth)
+@ja1 = ($js1 =~ m/(\w+)(?=\s)/g);  #lookahead (?=MatchThisRegexp_zeroLenth)
+
+
+@ja1 = ($js1 =~ m/(?<!\s)(\w+)/g); #lookbehind  (?<Not.MatchThisRegexp_zeroLenth)
+@ja1 = ($js1 =~ m/([a-zA-Z]+)(?!\d)/g);  #lookahead (?!Not.MatchThisRegexp_zeroLenth)
+
+#2}}}
+#{{{2 prvent backtracking : very useful with zero-lenth
+@ja1 = ($js1 =~ m/(?>[a-zA-Z]+)(?!\d)/g);  #
+@ja1 = ($js1 =~ m/(?>[a-zA-Z]+)(?=\d)/g);  #
+
+#2}}}
+#{{{2 : compare vim<==>perl  for lookbehind/lookahead + prevent-backtrace
+#           behind<--s[0] s[1] s[2] s[3]-->ahead
+#           regZ = regexp-ZeroLength match
+#           regM = regexp-MaxLength match and not traceback
+#lookahead-match    :vim <==> perl :   reg0\(regZ\)\@=     <==>   reg0(?=regZ)
+#lookahead-NotMatch :vim <==> perl :   reg0\(regZ\)\@!     <==>   reg0(?!regZ)
+#
+#lookbehind-match   :vim <==> perl :   \(regZ\)\@<=reg0    <==>   (?<=regZ)reg0
+#lookbehind-NotMatch:vim <==> perl :   \(regZ\)\@<!reg0    <==>   (?<!regZ)reg0
+#
+#prevent-backtrace  :vim <==> perl :   \(regM\)\@>reg0     <==>   (?>regM)reg0
+#2}}}
+
+
+print Dumper(\@ja1);
+printf("L%u: $1 $2 \n",__LINE__);
 #1}}}
 
 printf("\n_______ end : L%u\n",__LINE__);
