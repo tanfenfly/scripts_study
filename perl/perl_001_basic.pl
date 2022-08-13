@@ -396,6 +396,8 @@ printf("L%u: $1 $2 \n",__LINE__);
 
 #{{{1 dir operation
 
+#opendir/closedir + chdir
+#{{{2 cmd=(find .) 
 #chdir("/etc");print `ls -l`;
 sub fun_kf01_show_curdir_files() {
   my $tD1=shift;
@@ -409,12 +411,13 @@ sub fun_kf01_show_curdir_files() {
       &fun_kf01_show_curdir_files("$tD1/$tF1");
     }
   }
+  closedir $tH1;
 }
 
 #&fun_kf01_show_curdir_files("./zz01");
 #&fun_kf01_show_curdir_files("/etc");
-
-
+#2}}}
+#{{{2 tree cmd = mode01 OK
 sub fun_kf02_tree_curdir_files() {
   my $tD1=shift;
   my $tS1=shift;
@@ -431,6 +434,7 @@ sub fun_kf02_tree_curdir_files() {
     if ($tF1 =~ /^\./) {  next;}
     push @tFA1,$tF1;
   }
+  closedir $tH1;
 
   my $tL1=@tFA1;
   #printf("L%u: $tD1 : $tL1\n",__LINE__);
@@ -461,9 +465,67 @@ sub fun_kf02_tree_curdir_files() {
 
 }
 
-&fun_kf02_tree_curdir_files(".","|");
+#&fun_kf02_tree_curdir_files(".","|");
 #&fun_kf02_tree_curdir_files("./zz01","|");
 #&fun_kf02_tree_curdir_files("/etc","|");
+#2}}}
+#{{{2 tree cmd = mode02 OK
+sub fun_kf03_tree_curdir_files() {
+  my $tD1=shift;
+  my $tS1=shift;
+  my $tH1;
+  my $tF1;
+  $G1++;
+  #if ($G1>500) {return;}
+  printf("L%u: enter @ tD1=$tD1 @ tS1=$tS1\n",__LINE__) if($GD1);
+  printf("$tS1=tS1 @ L%u: enter @ tD1=$tD1 @ \n",__LINE__) if($GD1); 
+  opendir $tH1,"$tD1";
+  my @tFA1=();
+  while($tF1 = readdir $tH1) {
+    if ($tF1 =~ /^\.+$/) {  next;}
+    if ($tF1 =~ /^\./) {  next;}
+    push @tFA1,$tF1;
+  }
+  closedir $tH1;
+
+  my $tL1=@tFA1;
+  #printf("L%u: $tD1 : $tL1\n",__LINE__);
+  #print "@tFA1 \n";
+  for(my $i=0;$i<$tL1;$i++) {
+    $tF1=$tFA1[$i];
+    my $nf="$tD1/$tF1";
+    printf("L%u: $tD1\n",__LINE__) if($GD1);
+    printf("L%u: $tS1\n",__LINE__) if($GD1);;
+    print "$tS1|---$tF1\n";
+    printf("L%u:\n",__LINE__) if($GD1);
+    if (-l "$nf") { next;}
+    if (-d "$nf") {
+      my $tS2;
+      printf("L%u:i=$i, tL1=$tL1\n",__LINE__) if($GD1);;
+      if ($i==($tL1-1)) {
+        $tS2="$tS1    ";
+        printf("L%u:\n",__LINE__) if($GD1);;
+      } 
+      else {
+        $tS2="$tS1|   ";
+      }
+      &fun_kf03_tree_curdir_files("$nf","$tS2");
+    }
+  }
+
+}
+
+#&fun_kf03_tree_curdir_files(".","");
+#2}}}
+#mkdir/rmdir + glob()
+#{{{2  mkdir/rmdir + glob()
+
+mkdir("./zz02"); print `ls -l`;
+rmdir("./zz02"); print `ls -l`;
+my @ka1=glob("*.pl");
+print " @ka1 ";
+
+#2}}}
 #1}}}
 printf("\n_______ end : L%u\n",__LINE__);
 print `date +%N`;
