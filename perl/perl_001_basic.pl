@@ -3,7 +3,7 @@
 
 use strict;
 use Data::Dumper;
-use vars qw(%hash2 %hash1 @arry1);
+use vars qw(%hash2 %hash1 @arry1 $G1 $GD1);
 printf("hello world\n");
 # perldoc perldoc
 #https://perldoc.perl.org/perlintro
@@ -348,6 +348,7 @@ printf("L%u: string,hex,decimal=%s,%x,%u \n",__LINE__,$is2,hex($is2),hex($is2));
 #1}}}
 #{{{1 regexp
 
+if (0) { #just used to remove some logs
 printf("L%u:\n",__LINE__);
 my @ja1;
 my $js1="123 abc456 789def ghi066jkl mno";
@@ -377,6 +378,7 @@ my $js1="123 abc456 789def ghi066jkl mno";
 #           behind<--s[0] s[1] s[2] s[3]-->ahead
 #           regZ = regexp-ZeroLength match
 #           regM = regexp-MaxLength match and not traceback
+#           vim (regZ)\@.     <==>  perl (?.regZ)   : . is operation
 #lookahead-match    :vim <==> perl :   reg0\(regZ\)\@=     <==>   reg0(?=regZ)
 #lookahead-NotMatch :vim <==> perl :   reg0\(regZ\)\@!     <==>   reg0(?!regZ)
 #
@@ -389,7 +391,80 @@ my $js1="123 abc456 789def ghi066jkl mno";
 
 print Dumper(\@ja1);
 printf("L%u: $1 $2 \n",__LINE__);
+}
 #1}}}
 
+#{{{1 dir operation
+
+#chdir("/etc");print `ls -l`;
+sub fun_kf01_show_curdir_files() {
+  my $tD1=shift;
+  my $tH1;
+  my $tF1;
+  opendir $tH1,"$tD1";
+  while($tF1 = readdir $tH1) {
+    if ($tF1 =~ /^\.+$/) {  next;}
+    print "$tD1/$tF1\n";
+    if ( -d "$tD1/$tF1") {
+      &fun_kf01_show_curdir_files("$tD1/$tF1");
+    }
+  }
+}
+
+#&fun_kf01_show_curdir_files("./zz01");
+#&fun_kf01_show_curdir_files("/etc");
+
+
+sub fun_kf02_tree_curdir_files() {
+  my $tD1=shift;
+  my $tS1=shift;
+  my $tH1;
+  my $tF1;
+  $G1++;
+  #if ($G1>500) {return;}
+  printf("L%u: enter @ tD1=$tD1 @ tS1=$tS1\n",__LINE__) if($GD1);
+  printf("$tS1=tS1 @ L%u: enter @ tD1=$tD1 @ \n",__LINE__) if($GD1); 
+  opendir $tH1,"$tD1";
+  my @tFA1=();
+  while($tF1 = readdir $tH1) {
+    if ($tF1 =~ /^\.+$/) {  next;}
+    if ($tF1 =~ /^\./) {  next;}
+    push @tFA1,$tF1;
+  }
+
+  my $tL1=@tFA1;
+  #printf("L%u: $tD1 : $tL1\n",__LINE__);
+  #print "@tFA1 \n";
+  for(my $i=0;$i<$tL1;$i++) {
+    $tF1=$tFA1[$i];
+    my $nf="$tD1/$tF1";
+    printf("L%u: $tD1\n",__LINE__) if($GD1);
+    printf("L%u: $tS1\n",__LINE__) if($GD1);;
+    print "$tS1---$tF1\n";
+    printf("L%u:\n",__LINE__) if($GD1);
+    if (-l "$nf") { next;}
+    if (-d "$nf") {
+      my $tS2;
+      printf("L%u:i=$i, tL1=$tL1\n",__LINE__) if($GD1);;
+      if ($i==($tL1-1)) {
+        $tS2="$tS1";
+        $tS2=~s/\|$/ /;
+        $tS2="$tS2   |";
+        printf("L%u:\n",__LINE__) if($GD1);;
+      } 
+      else {
+        $tS2="$tS1   |";
+      }
+      &fun_kf02_tree_curdir_files("$nf","$tS2");
+    }
+  }
+
+}
+
+&fun_kf02_tree_curdir_files(".","|");
+#&fun_kf02_tree_curdir_files("./zz01","|");
+#&fun_kf02_tree_curdir_files("/etc","|");
+#1}}}
 printf("\n_______ end : L%u\n",__LINE__);
+print `date +%N`;
 printf("L%u:\n",__LINE__);
