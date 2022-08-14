@@ -599,6 +599,7 @@ for(my $i=0;$i<=$#mA1;$i++) {printf("$i: %x\n",$mA1[$i]);}
 my $nS1;
 my @nA1;
 my %nH1;
+if (0) { #just used to remove some logs
 $nS1=$0;
 $nS1=$^M;
 $nS1=$^O;
@@ -619,6 +620,21 @@ printf("L%u:nS1=$nS1\n",__LINE__);
 print Dumper($nS1);
 print Dumper(\@nA1);
 print Dumper(\%nH1);
+}
+#1}}}
+#{{{1 EOF string
+my $pS1="yyy@163.com";
+my $pS2="xx@111.com";
+my $pM1;
+
+print <<EOF;
+hello $pS1
+This from eof test
+EOF
+print <<'EOF';
+hello $pS1 @x %h
+This from eof test
+EOF
 
 #1}}}
 printf("\n_______ end : L%u\n",__LINE__);
