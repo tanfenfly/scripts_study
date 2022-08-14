@@ -593,6 +593,34 @@ for(my $i=0;$i<=$#mA1;$i++) {printf("$i: %x\n",$mA1[$i]);}
 #2}}}
 }
 #1}}}
+#{{{1 special/global vars
+#https://perldoc.perl.org/variables
+
+my $nS1;
+my @nA1;
+my %nH1;
+$nS1=$0;
+$nS1=$^M;
+$nS1=$^O;
+
+$nS1=\@ARGV;
+$nS1=\@INC;
+
+$nS1=\%INC;
+$nS1=\%ENV;
+$nS1=$ENV{PATH};
+$nS1=\%SIG;
+
+$nS1=__FILE__;
+$nS1=__LINE__;
+$nS1=__PACKAGE__;
+
+printf("L%u:nS1=$nS1\n",__LINE__);
+print Dumper($nS1);
+print Dumper(\@nA1);
+print Dumper(\%nH1);
+
+#1}}}
 printf("\n_______ end : L%u\n",__LINE__);
 print `date +%N`;
 printf("L%u:\n",__LINE__);
