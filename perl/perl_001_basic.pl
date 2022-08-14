@@ -393,7 +393,6 @@ print Dumper(\@ja1);
 printf("L%u: $1 $2 \n",__LINE__);
 }
 #1}}}
-
 #{{{1 dir operation
 
 #opendir/closedir + chdir
@@ -517,6 +516,7 @@ sub fun_kf03_tree_curdir_files() {
 
 #&fun_kf03_tree_curdir_files(".","");
 #2}}}
+if (0) { #just used to remove some logs
 #mkdir/rmdir + glob()
 #{{{2  mkdir/rmdir + glob()
 
@@ -526,6 +526,72 @@ my @ka1=glob("*.pl");
 print " @ka1 ";
 
 #2}}}
+}
+#1}}}
+#{{{1 file operation
+my $mF1;
+my $mS1;
+my $mI1;
+my @mA1;
+
+if (0) { #just used to remove some logs
+#{{{2 read file
+`ls > yy01.txt`;
+open( $mF1,'<',"yy01.txt");
+while($mS1=<$mF1>){ printf("###%s",$mS1); }
+close($mF1);
+#2}}}
+#{{{2 write file
+$mI1=0;
+open( $mF1,'>',"yy07.txt");
+while($mI1++<10) { print $mF1 "line mI1=$mI1\n"; }
+close($mF1);
+print `cat yy07.txt`;
+#2}}}
+#{{{2 rename file + unlink/remove file
+`ls > yy01.txt`;
+`ls > yy07.txt`;
+rename("yy01.txt","yy03.txt");
+unlink("yy07.txt");
+#2}}}
+#{{{2 file test
+$mS1="~/.bashrc";
+$mS1="./perl_001_basic.pl";
+$mS1="$0";
+if ( -e "$mS1" ) { printf("L%u: -e \n",__LINE__); } else { printf("L%u: ! -e \n",__LINE__); }
+if ( -d "$mS1" ) { printf("L%u: -d \n",__LINE__); } else { printf("L%u: ! -d \n",__LINE__); }
+if ( -x "$mS1" ) { printf("L%u: -x \n",__LINE__); } else { printf("L%u: ! -x \n",__LINE__); }
+if ( -f "$mS1" ) { printf("L%u: -f \n",__LINE__); } else { printf("L%u: ! -f \n",__LINE__); }
+if ( -l "$mS1" ) { printf("L%u: -l \n",__LINE__); } else { printf("L%u: ! -l \n",__LINE__); }
+
+#2}}}
+#{{{2 getc()=get 1 char from file each time
+open( $mF1,'<',"yy03.txt");
+while($mI1++<20){
+  $mS1=getc($mF1);
+  printf("$mI1 :$mS1\n");
+}
+close($mF1);
+
+#2}}}
+#{{{2 pack()/unpack() for binary file
+$mS1=pack("QQQQ",0x1111_1111_1111_1111,0x2222_2222_2222_2222,0x3333_3333_3333_3333,0x4444_4444_4444_4444);
+$mS1=pack("LLLL",0x1111_1111,0x2222_2222,0x3333_3333,0x4444_4444);
+$mS1=pack("SSSS",0x1111,0x2222,0x3333,0x4444);
+$mS1=pack("WWWW",0x11,0x22,0x33,0x44);
+open( $mF1,'>',"yy07.bin"); print $mF1 $mS1; close($mF1);
+print $mS1; print Dumper($mS1);
+print `hexdump -C yy07.bin`;
+
+open( $mF1,'<',"yy07.bin"); 
+read($mF1,$mS1,4); 
+@mA1=unpack("WWWW",$mS1);
+close($mF1);
+print Dumper(\@mA1);
+for(my $i=0;$i<=$#mA1;$i++) {printf("$i: %x\n",$mA1[$i]);}
+
+#2}}}
+}
 #1}}}
 printf("\n_______ end : L%u\n",__LINE__);
 print `date +%N`;
