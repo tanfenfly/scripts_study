@@ -627,6 +627,7 @@ my $pS1="yyy@163.com";
 my $pS2="xx@111.com";
 my $pM1;
 
+if (0) { #just used to remove some logs
 print <<EOF;
 hello $pS1
 This from eof test
@@ -635,7 +636,24 @@ print <<'EOF';
 hello $pS1 @x %h
 This from eof test
 EOF
+}
+#1}}}
+#{{{1 Error process
+my $qS1;
+my $qF1;
+my %qH1;
 
+#open($qF1,"XXXX") || die "Can not open file";
+open($qF1,"XXXX") || warn "Warning:Can not open file";
+if(exists($qH1{k1})) { printf("L%u: k1 exist\n",__LINE__); } else { printf("L%u: k1 not exist\n",__LINE__); }
+$qH1{k1}="xxx";
+if(exists($qH1{k1})) { printf("L%u: k1 exist\n",__LINE__); } else { printf("L%u: k1 not exist\n",__LINE__); }
+
+use Carp;
+sub fun_qF01_testCarp {
+  carp "Error here";
+}
+&fun_qF01_testCarp();
 #1}}}
 printf("\n_______ end : L%u\n",__LINE__);
 print `date +%N`;
