@@ -70,3 +70,24 @@ function cccgg001_egrep_nur_InPwd()
 	egrep  -nur   "$1"  ./ --color  ;#OK, 若忽略大小写,可以在后面加 -i
 }
 
+#bTag=new settings=
+
+
+alias ..='cd ..;pwd'
+alias ...='..; ..'
+alias ....='..; ..; ..'
+alias .....='..; ..; ..; ..'
+
+alias cd1='cd ..;pwd'
+alias cd2='cd ../..;pwd'
+alias cd3='cd ../../..;pwd'
+alias cd4='cd ../../../..;pwd'
+
+HISTCONTROL=ignoreboth
+HISTSIZE=10000
+HISTFILESIZE=80000
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+
