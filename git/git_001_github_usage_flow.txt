@@ -1,17 +1,27 @@
+
+#bTag=commit to github org=
 step1: Local commit
-git add perl_001_basic.pl
-git commit -asm "perl: add perl_001_basic.pl"
+% git add perl_001_basic.pl
+% git commit -asm "perl: add perl_001_basic.pl"
 
 step2: push to github 
-git remove -v
-git remote -v
-git remote remove origin
-git remote add origin https://github.com/tanfenfly/scripts_study
-git push --set-upstream origin main ;# input userName=yourName ;PassWord=Personal access tokens,not real PassWord
+% git remove -v
+% git remote -v
+% git remote remove origin
+% git remote add origin https://github.com/tanfenfly/scripts_study
+% git push --set-upstream origin main ;# input userName=yourName ;PassWord=Personal access tokens,not real PassWord
 
 
 Reference:
 		https://wenku.baidu.com/view/91c975cd82c758f5f61fb7360b4c2e3f57272512.html
 		https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on
 		https://blog.csdn.net/weixin_62142107/article/details/123315210
+
+#bTag= enable git completion=
+% git clone https://github.com/git/git.git
+% cd git/contrib/completion/
+% git --version ;# for example 2.13.2
+% git log |egrep '2.13.2'
+% git checkout -b git_2.31.2 8c8e978f5719c6a58fb998742207bf907f963143 ;#must using the same version as git command 
+% source git-completion.bash
 
